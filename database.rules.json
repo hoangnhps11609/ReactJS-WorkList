@@ -1,0 +1,51 @@
+{
+    "rules": {
+      "workdates": {
+        ".read": "auth !=null",
+        "$workdatesId" : {
+          ".write" : "auth != null",
+            ".validate": "newData.hasChildren(['id', 'uid', 'date'])",
+              "id": {
+                ".validate": "newData.val() === $workdatesId"
+              },
+                "uid": {
+                  ".validate" : "root.child('users/' + newData.val()).exists()"
+                },
+                  "date" : {
+                    ".validate" : "newData.val().length >0"
+                  }
+                    }
+        },
+          
+          "works": {
+            ".read": "auth != null",
+              "$workdatesId": {
+                ".read": "auth != null",
+                  ".validate": "root.child('workdates/' + $workdatesId).exists()",
+                    "$workId":{
+                      ".write": "auth != null",
+                        ".validate": "newData.hasChildren(['name', 'status', 'timestamp'])"
+                    },
+                      "name": {
+                        ".validate": "newData.val().length > 0"
+                      },
+                        "status": {
+                          ".validate": "newData.val() === 'TODO' || newData.val() === 'DONE'"
+                        }
+              }
+          },
+            "users": {
+              ".read": "auth != null",
+                "$uid": {
+                  ".write": "auth != null && auth.id === $uid",
+                    ".validate": "newData.hasChildren(['name', 'avatar'])",
+                      "name": {
+                        ".validate": "newData.val().length > 0"
+                      },
+                        "avatar": {
+                        ".validate": "newData.val().length > 0"
+                      }
+                }
+            }
+       }
+  }
